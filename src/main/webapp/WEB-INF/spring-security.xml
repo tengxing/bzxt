@@ -1,0 +1,56 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+xmlns:beans="http://www.springframework.org/schema/beans"
+ xmlns:context="http://www.springframework.org/schema/context"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+		  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		  http://www.springframework.org/schema/security
+		  http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+<context:component-scan base-package="cn.edu.sdut.bzxt" />
+<http>
+       <intercept-url pattern="/control/**" access="ROLE_user,ROLE_admin" />
+		<form-login 
+		    login-page="/login/form" 
+		    default-target-url="/control/index" 
+			authentication-failure-url="/login/form?error" 
+			username-parameter="username"
+			password-parameter="password" />
+		<logout logout-success-url="/logout" />
+		
+</http>
+ <beans:bean id="customUserDetailsService"
+    class="cn.edu.sdut.bzxt.configuration.CustomUserDetailsService">
+ </beans:bean>   
+	 <authentication-manager> 
+    <authentication-provider user-service-ref="customUserDetailsService">
+        <password-encoder hash="md5"/>
+    </authentication-provider>
+    </authentication-manager>
+<!--     
+    
+    <beans:bean id="accessDecisionManager" class="org.springframework.security.vote.AffirmativeBased">
+        <beans:property name="allowIfAllAbstainDecisions" value="false"/>
+        <beans:property name="decisionVoters">
+            <beans:list>
+                <beans:bean class="org.springframework.security.vote.RoleVoter"/>
+                <beans:bean class="org.springframework.security.vote.AuthenticatedVoter"/>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+    
+    
+    <beans:bean id="resourceSecurityInterceptor" class="org.springframework.security.intercept.web.FilterSecurityInterceptor">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="accessDecisionManager" ref="accessDecisionManager"/>
+        <beans:property name="objectDefinitionSource" ref="secureResourceFilterInvocationDefinitionSource" />
+        <beans:property name="observeOncePerRequest" value="false" />
+       
+    </beans:bean>
+ -->    
+<!--     
+     <bean id="secureResourceFilterInvocationDefinitionSource" class="com.i4you.security.SecureResourceFilterInvocationDefinitionSource" >
+      
+    </bean>
+ -->    
+</beans:beans>
